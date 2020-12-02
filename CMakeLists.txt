@@ -2,8 +2,11 @@ cmake_minimum_required(VERSION 3.10)
 
 project(mosquitto_example)
 
-add_executable(publisher src/publisher.cpp)
-target_link_libraries(publisher mosquitto)
+add_executable(temperature_publisher src/temperature_publisher.cpp)
+target_link_libraries(temperature_publisher mosquitto)
+
+add_executable(people_count_publisher src/people_count_publisher.cpp)
+target_link_libraries(people_count_publisher mosquitto)
 
 add_executable(subscriber src/subscriber.cpp)
 target_link_libraries(subscriber mosquitto)

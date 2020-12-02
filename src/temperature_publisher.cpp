@@ -3,8 +3,10 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 
 static bool alive = true;
+static bool connected = false;
 
 void handle_signal(int s)
 {
@@ -14,18 +16,7 @@ void handle_signal(int s)
 void connect_callback(struct mosquitto *mosq, void *obj, int result)
 {
   printf("Connected to MQTT broker\n");
-}
-
-void message_callback(struct mosquitto *mosq, void *obj,
-    const struct mosquitto_message *message)
-{
-  if (!strcmp(message->topic, "sensor/temperature")) {
-    printf("Temperature: %s\n", (char *)message->payload);
-  }
-
-  if (!strcmp(message->topic, "sensor/people_count")) {
-    printf("People Count: %s\n", (char *)message->payload);
-  }
+  connected = true;
 }
 
 int main(int argc, char *argv[])
@@ -35,22 +26,35 @@ int main(int argc, char *argv[])
 
   mosquitto_lib_init();
 
-  struct mosquitto *mosq = mosquitto_new("subscriber", true, NULL);
+  struct mosquitto *mosq = mosquitto_new("temperature_publisher", true, NULL);
 
   if (mosq)
   {
     mosquitto_connect_callback_set(mosq, connect_callback);
-    mosquitto_message_callback_set(mosq, message_callback);
 
     int rc = mosquitto_connect(mosq, "localhost", 1883, 60);
-
-    mosquitto_subscribe(mosq, NULL, "sensor/temperature", 0);
-    mosquitto_subscribe(mosq, NULL, "sensor/people_count", 0);
 
     while (alive)
     {
       if (alive && rc) {
+        connected = false;
         mosquitto_reconnect(mosq);
+      }
+
+      if (connected)
+      {
+        char buffer[32];
+        int random = (rand() % 5) + 25;
+        sprintf(buffer, "%d", random);
+
+        rc = mosquitto_publish(
+          mosq, NULL, "sensor/temperature", sizeof(buffer), buffer, 0, true
+        );
+
+        if (!rc) {
+          printf("Published: %s\n", buffer);
+          sleep(1);
+        }
       }
 
       rc = mosquitto_loop(mosq, -1, 1);

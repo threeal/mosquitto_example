@@ -21,14 +21,12 @@ void connect_callback(struct mosquitto *mosq, void *obj, int result)
 
 int main(int argc, char *argv[])
 {
-  int count = 1;
-
   signal(SIGINT, handle_signal);
   signal(SIGTERM, handle_signal);
 
   mosquitto_lib_init();
 
-  struct mosquitto *mosq = mosquitto_new("publisher", true, NULL);
+  struct mosquitto *mosq = mosquitto_new("people_count_publisher", true, NULL);
 
   if (mosq)
   {
@@ -46,15 +44,16 @@ int main(int argc, char *argv[])
       if (connected)
       {
         char buffer[32];
-        sprintf(buffer, "Hello world! (%d)", count++);
+        int random = (rand() % 3) + 1;
+        sprintf(buffer, "%d", random);
 
         rc = mosquitto_publish(
-          mosq, NULL, "example/test", sizeof(buffer), buffer, 0, true
+          mosq, NULL, "sensor/people_count", sizeof(buffer), buffer, 0, true
         );
 
         if (!rc) {
           printf("Published: %s\n", buffer);
-          sleep(1);
+          sleep(5);
         }
       }
 
