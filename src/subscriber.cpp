@@ -1,8 +1,8 @@
 #include <cstring>
+#include <iostream>
 #include <mosquitto.h>
 #include <signal.h>
 #include <stdlib.h>
-#include <stdio.h>
 
 static bool alive = true;
 
@@ -20,11 +20,11 @@ void message_callback(struct mosquitto *mosq, void *obj,
     const struct mosquitto_message *message)
 {
   if (!strcmp(message->topic, "sensor/temperature")) {
-    printf("Temperature: %s\n", (char *)message->payload);
+    std::cout << "Temperature: " << (char *)message->payload << std::endl;
   }
 
   if (!strcmp(message->topic, "sensor/people_count")) {
-    printf("People Count: %s\n", (char *)message->payload);
+    std::cout << "People Count: " << (char *)message->payload << std::endl;
   }
 }
 

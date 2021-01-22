@@ -11,9 +11,11 @@
   $ cmake ..
   $ make
   ```
-- Run both `publisher` and `subscriber` on different terminal.
+- Run both `publishers` and `subscriber` on different terminal.
   ```bash
-  $ ./publisher
+  $ ./temperature_publisher
+  # or
+  $ ./people_count_publisher
   ```
   ```bash
   $ ./subscriber

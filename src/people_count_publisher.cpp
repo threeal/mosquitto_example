@@ -1,8 +1,7 @@
-#include <cstring>
+#include <iostream>
 #include <mosquitto.h>
 #include <signal.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include <sstream>
 #include <unistd.h>
 
 static bool alive = true;
@@ -15,7 +14,7 @@ void handle_signal(int s)
 
 void connect_callback(struct mosquitto *mosq, void *obj, int result)
 {
-  printf("Connected to MQTT broker\n");
+  std::cout << "Connected to MQTT broker" << std::endl;
   connected = true;
 }
 
@@ -43,16 +42,19 @@ int main(int argc, char *argv[])
 
       if (connected)
       {
-        char buffer[32];
+        std::stringstream ss;
+
         int random = (rand() % 3) + 1;
-        sprintf(buffer, "%d", random);
+        ss << random;
+
+        auto message = ss.str();
 
         rc = mosquitto_publish(
-          mosq, NULL, "sensor/people_count", sizeof(buffer), buffer, 0, true
+          mosq, NULL, "sensor/people_count", message.size(), message.c_str(), 0, true
         );
 
         if (!rc) {
-          printf("Published: %s\n", buffer);
+          std::cout << "Published: " << message << std::endl;
           sleep(5);
         }
       }
