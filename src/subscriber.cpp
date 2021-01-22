@@ -30,10 +30,6 @@ void message_callback(struct mosquitto *mosq, void *obj,
   if (!strcmp(message->topic, "sensor/fan_speed")) {
     std::cout << "Fan Speed: " << (char *)message->payload << std::endl;
   }
-
-  if (!strcmp(message->topic, "sensor/fan_speed")) {
-    printf("Fan Speed: %s\n", (char *)message->payload);
-  }
 }
 
 int main(int argc, char *argv[])
