@@ -26,6 +26,10 @@ void message_callback(struct mosquitto *mosq, void *obj,
   if (!strcmp(message->topic, "sensor/people_count")) {
     std::cout << "People Count: " << (char *)message->payload << std::endl;
   }
+
+  if (!strcmp(message->topic, "sensor/fan_speed")) {
+    std::cout << "Fan Speed: " << (char *)message->payload << std::endl;
+  }
 }
 
 int main(int argc, char *argv[])
@@ -46,6 +50,7 @@ int main(int argc, char *argv[])
 
     mosquitto_subscribe(mosq, NULL, "sensor/temperature", 0);
     mosquitto_subscribe(mosq, NULL, "sensor/people_count", 0);
+    mosquitto_subscribe(mosq, NULL, "sensor/fan_speed", 0);
 
     while (alive)
     {

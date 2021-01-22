@@ -8,5 +8,8 @@ target_link_libraries(temperature_publisher mosquitto)
 add_executable(people_count_publisher src/people_count_publisher.cpp)
 target_link_libraries(people_count_publisher mosquitto)
 
+add_executable(fan_speed_publisher src/fan_speed_publisher.cpp)
+target_link_libraries(fan_speed_publisher mosquitto)
+
 add_executable(subscriber src/subscriber.cpp)
 target_link_libraries(subscriber mosquitto)
